@@ -1,7 +1,14 @@
+using EmployeeWeb_Live.Services;
+using EmployeeWeb_Live.Services.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Service modülünü register etmek gerekiyor.
+builder.Services.AddHttpClient<IEmployeeService, EmployeeService>(s => s.BaseAddress = new Uri("https://localhost:7100/"));
+
 
 var app = builder.Build();
 
