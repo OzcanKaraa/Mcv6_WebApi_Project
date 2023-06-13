@@ -29,11 +29,17 @@ namespace EmployeeWeb_Live.Services
             return await response.ReadContentAsync<List<Employee>>();
         }
 
-        public Task<Employee> GetById(int id)
+        public async Task<Employee> GetById(int id)
         {
+            string ApiPath = BasePath + "EmployeeEF/" + id;
+
+            var response = await _client.GetAsync(ApiPath);
 
 
-            throw new NotImplementedException();
+            return await response.ReadContentAsync<Employee>();
+
+
+
         }
     }
 }

@@ -27,6 +27,7 @@ namespace EmployeeWeb_Live.Controllers
             return View();
         }
 
+        // Post
         [HttpPost]
         public async Task<IActionResult> Create([Bind ("FName,LName,City")] Employee employee)
         {
@@ -49,6 +50,17 @@ namespace EmployeeWeb_Live.Controllers
             }
 
             return View(employee);
+
+        }
+
+        // Get : Details
+        public async Task<IActionResult> Details (int id)
+        {
+            var employeeDetails = _service.GetById(id); // var mı yok mu
+
+            if (employeeDetails == null) return View("NotFound");
+
+            return View(employeeDetails);
 
         }
     }
