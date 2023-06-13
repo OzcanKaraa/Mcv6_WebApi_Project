@@ -35,10 +35,7 @@ namespace EmployeeWeb_Live.Services
 
             var response = await _client.GetAsync(ApiPath);
 
-
             return await response.ReadContentAsync<Employee>();
-
-
 
         }
     }

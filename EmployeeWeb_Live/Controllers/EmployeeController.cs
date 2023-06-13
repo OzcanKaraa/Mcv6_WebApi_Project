@@ -56,12 +56,47 @@ namespace EmployeeWeb_Live.Controllers
         // Get : Details
         public async Task<IActionResult> Details (int id)
         {
-            var employeeDetails = _service.GetById(id); // var mı yok mu
+            var employeeDetails = await _service.GetById(id); // var mı yok mu
 
             if (employeeDetails == null) return View("NotFound");
 
             return View(employeeDetails);
 
+        }
+
+        // Get : Edit/1
+        public async Task<IActionResult> Edit(int id)
+        {
+            var employeeDetails = await _service.GetById(id); // var mı yok mu
+
+            if (employeeDetails == null) return View("NotFound");
+
+            return View(employeeDetails);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,FName,LName,City")] Employee employee)
+        {
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:7100/EmployeeEF");
+
+                // Oluşturulan nesneyi JSON formatına çevirme işlemi gerekmekte.Bunu yapmak için de JSonSerializer ile Serialize metodunu kullanarak yapıyoruz.
+
+                var serializeEmployee = JsonSerializer.Serialize(employee);
+
+                StringContent stringContent = new StringContent(serializeEmployee, Encoding.UTF8, "application/json");
+
+                var postResult = client.PostAsync("api/EmployeeEF/" + id, stringContent).Result;
+
+                if (postResult.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
+            return View(employee);
         }
     }
 }
