@@ -28,5 +28,12 @@ namespace EmployeeWeb_Live.Services
 
             return await response.ReadContentAsync<List<Employee>>();
         }
+
+        public Task<Employee> GetById(int id)
+        {
+
+
+            throw new NotImplementedException();
+        }
     }
 }
