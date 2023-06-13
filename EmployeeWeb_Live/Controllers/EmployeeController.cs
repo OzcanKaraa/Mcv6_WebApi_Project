@@ -3,6 +3,8 @@ using EmployeeWeb_Live.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using System.Text;
+using EmployeeApi_Live;
+using Employee = EmployeeWeb_Live.Models.Employee;
 
 namespace EmployeeWeb_Live.Controllers
 {
@@ -97,6 +99,34 @@ namespace EmployeeWeb_Live.Controllers
             }
 
             return View(employee);
+        }
+
+        // Delete
+        public async Task<IActionResult> Delete(int id)
+        {
+            var employeeDetails = await _service.GetById(id); // var mı yok mu
+
+            if (employeeDetails == null) return View("NotFound");
+
+            return View(employeeDetails);
+        }
+
+        [HttpPost,ActionName("Delete")]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri("https://localhost:7100/EmployeeEF");
+
+                var deleteResult = client.DeleteAsync("api/EmployeeEF/" + id).Result;
+
+                if (deleteResult.IsSuccessStatusCode)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+
+            return View();
         }
     }
 }
