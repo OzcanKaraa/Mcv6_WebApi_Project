@@ -54,7 +54,7 @@ namespace EmployeeApi_Draft.Controllers
         }
 
         //4.Update
-        [HttpPut]
+        [HttpPut("{id}")]
         //[Route("UpdateEmployee")]
         public async Task<ActionResult<List<Employee>>> UpdateEmployee(Employee request)
         {

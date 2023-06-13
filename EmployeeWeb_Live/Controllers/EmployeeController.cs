@@ -88,9 +88,9 @@ namespace EmployeeWeb_Live.Controllers
 
                 StringContent stringContent = new StringContent(serializeEmployee, Encoding.UTF8, "application/json");
 
-                var postResult = client.PostAsync("api/EmployeeEF/" + id, stringContent).Result;
+                var putResult = client.PutAsync("api/EmployeeEF/" + id, stringContent).Result;
 
-                if (postResult.IsSuccessStatusCode)
+                if (putResult.IsSuccessStatusCode)
                 {
                     return RedirectToAction("Index");
                 }
