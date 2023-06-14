@@ -5,16 +5,23 @@ using System.Text.Json;
 using System.Text;
 using EmployeeApi_Live;
 using Employee = EmployeeWeb_Live.Models.Employee;
+using ExcelDataReader;
 
 namespace EmployeeWeb_Live.Controllers
 {
     public class EmployeeController : Controller
     {
         private readonly IEmployeeService _service;
+        private readonly string _ApiBase;
+        private readonly IWebHostEnvironment _environment;
+        
 
-        public EmployeeController(IEmployeeService service)
+        public EmployeeController(IEmployeeService service,IConfiguration configuration,IWebHostEnvironment environment)
         {
-            _service = service;  
+            _service = service;
+            _ApiBase = configuration["APISection:BaseAddress"];
+            _environment = environment;
+            
         }
 
         public async Task<IActionResult> Index()
@@ -127,6 +134,55 @@ namespace EmployeeWeb_Live.Controllers
             }
 
             return View();
+        }
+
+        public async Task<IActionResult> TransferFromExcel()
+        {
+            string wwwPath=_environment.WebRootPath;
+
+            var fileName = wwwPath + "\\MOCK_DATA.xlsx";
+
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
+            using ( var client = new HttpClient())
+            {
+                client.BaseAddress = new Uri(_ApiBase);
+
+                using (var stream = System.IO.File.Open(fileName, FileMode.Open, FileAccess.Read)) // Excel dosyası okumak için açılıyor
+                {
+                    using(var reader= ExcelReaderFactory.CreateReader(stream))
+                    {
+                        while (reader.Read())
+                        {
+                            Employee employee = new Employee()
+                            {
+                                FName = reader.GetValue(0).ToString(),
+                                LName = reader.GetValue(1).ToString(),
+                                City = reader.GetValue(2).ToString()
+
+                            }; // kolonlardaki değerler modele yükleniyor...
+
+                            var serializedEmployee=JsonSerializer.Serialize(employee);
+
+                            StringContent stringContent=new StringContent(serializedEmployee,Encoding.UTF8,"application/json");
+
+                            var postResult = client.PostAsync("api/EmployeeEF", stringContent).Result;
+
+                            if (!postResult.IsSuccessStatusCode)
+                            {
+                                break;
+                            }
+
+                        }
+                    }
+                }
+
+            };
+
+            var employees = await _service.GetAll();
+
+                return View("Index",employees);
+
         }
     }
 }

@@ -11,17 +11,20 @@ namespace EmployeeWeb_Live.Services
     {
         // MVC uygulaması burada bir client görevi görecek. O yüzden gerekli kütüphaneleri kullanacak.
         private readonly HttpClient _client;
+        private readonly string _ApiBase;
 
-        public const string BasePath = "https://localhost:7100/api/";
 
-        public EmployeeService(HttpClient client)
+        //public const string BasePath = "https://localhost:7100/api/";
+
+        public EmployeeService(HttpClient client,IConfiguration configuration)
         {
-                _client = client;
+            _client = client;
+            _ApiBase = configuration["APISection:BaseAddress"]; // appsettings.json dan geliyor
         }
 
         public async Task<IEnumerable<Employee>> GetAll()
         {
-            string ApiPath = BasePath + "EmployeeEF";
+            string ApiPath = _ApiBase + "api/EmployeeEF";
 
             var response= await _client.GetAsync(ApiPath);
 
@@ -31,7 +34,7 @@ namespace EmployeeWeb_Live.Services
 
         public async Task<Employee> GetById(int id)
         {
-            string ApiPath = BasePath + "EmployeeEF/" + id;
+            string ApiPath = _ApiBase + "api/EmployeeEF/" + id;
 
             var response = await _client.GetAsync(ApiPath);
 
