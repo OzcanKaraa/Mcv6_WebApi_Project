@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
+    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EmployeeApi_Live\EmployeeApi_Live.csproj" />
   </ItemGroup>
 
