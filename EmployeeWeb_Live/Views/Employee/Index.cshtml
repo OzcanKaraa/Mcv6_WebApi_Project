@@ -1,4 +1,10 @@
-﻿@model IEnumerable<Employee>
+﻿@using X.PagedList;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList.Web.Common;
+
+
+@*@model IEnumerable<Employee>*@
+@model IPagedList<Employee>
 
 <a class="btn btn-success" asp-action="TransferFromExcel">
     <i class="bi bi-plus-circle"></i> Transfer from Excel
@@ -35,6 +41,15 @@
         }
     </tbody>
 </table>
+@Html.PagedListPager((IPagedList)Model,page=>Url.Action("Index",new {page}),
+new PagedListRenderOptions
+{
+    DisplayLinkToIndividualPages = true,
+    DisplayPageCountAndCurrentLocation = false,
+    MaximumPageNumbersToDisplay = 10,
+    LiElementClasses = new string[] { "page-item" },
+    PageClasses = new string[] { "page-link" }
+})
 <a asp-controller="Employee" asp-action="Create" class="btn btn-success">
     <i class="bi bi-plus-circle"></i> Ekle
 </a>

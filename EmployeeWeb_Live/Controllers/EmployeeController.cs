@@ -6,6 +6,7 @@ using System.Text;
 using EmployeeApi_Live;
 using Employee = EmployeeWeb_Live.Models.Employee;
 using ExcelDataReader;
+using X.PagedList;
 
 namespace EmployeeWeb_Live.Controllers
 {
@@ -24,11 +25,11 @@ namespace EmployeeWeb_Live.Controllers
             
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page=1)
         {
             var employees= await _service.GetAll();
 
-            return View(employees);
+            return View(await employees.ToPagedListAsync(page,8));
         }
 
         public IActionResult Create()
